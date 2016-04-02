@@ -1,11 +1,16 @@
 module Test.Data.String (testString) where
 
-import Prelude
-import Data.Maybe
-import Control.Monad.Eff.Console (log)
-import Data.String
-import Test.Assert (assert)
+import Prelude (Unit, Ordering(..), (==), ($), bind, negate, not, (/=), (&&))
 
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+
+import Data.Maybe (Maybe(..), isNothing)
+import Data.String
+
+import Test.Assert (ASSERT, assert)
+
+testString :: forall eff. Eff (console :: CONSOLE, assert :: ASSERT | eff) Unit
 testString = do
   log "charAt"
   assert $ charAt 0 "" == Nothing
@@ -14,9 +19,6 @@ testString = do
   assert $ charAt 0 "ab" == Just 'a'
   assert $ charAt 1 "ab" == Just 'b'
   assert $ charAt 2 "ab" == Nothing
-
-  log "fromChar"
-  assert $ fromChar 'a' == "a"
 
   log "singleton"
   assert $ singleton 'a' == "a"
@@ -131,21 +133,14 @@ testString = do
   assert $ take 1 "ab" == "a"
   assert $ take 2 "ab" == "ab"
   assert $ take 3 "ab" == "ab"
+  assert $ take (-1) "ab" == ""
 
   log "drop"
   assert $ drop 0 "ab" == "ab"
   assert $ drop 1 "ab" == "b"
   assert $ drop 2 "ab" == ""
   assert $ drop 3 "ab" == ""
-
-  log "count"
-  assert $ count (\c -> true) "" == 0
-  assert $ count (\c -> true) "ab" == 2
-  assert $ count (\c -> false) "ab" == 0
-  assert $ count (\c -> c == 'a') "aabbcc" == 2
-  assert $ count (\c -> c == 'b') "aabbcc" == 0
-  assert $ count (\c -> c /= 'a') "aabbcc" == 0
-  assert $ count (\c -> c /= 'b') "aabbcc" == 2
+  assert $ drop (-1) "ab" == "ab"
 
   log "split"
   assert $ split "" "" == []

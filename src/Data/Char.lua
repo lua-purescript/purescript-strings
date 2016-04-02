@@ -1,10 +1,6 @@
 -- module Data.Char
 local Char = {}
 
-Char.toString = function (c)
-  return c
-end
-
 Char.toCharCode = function (c)
   return byte(c)
 end

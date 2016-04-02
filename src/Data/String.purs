@@ -5,7 +5,6 @@ module Data.String
   ( charAt
   , charCodeAt
   , fromCharArray
-  , fromChar
   , toChar
   , contains
   , indexOf
@@ -18,7 +17,6 @@ module Data.String
   , singleton
   , localeCompare
   , replace
-  , count
   , take
   , takeWhile
   , drop
@@ -34,10 +32,9 @@ module Data.String
   ) where
 
 import Prelude
-import qualified Data.Char as C
+
 import Data.Maybe (Maybe(..), isJust)
-import Data.Monoid (Monoid)
-import qualified Data.String.Unsafe as U
+import Data.String.Unsafe as U
 
 -- | Returns the character at the given index, if the index is within bounds.
 charAt :: Int -> String -> Maybe Char
@@ -50,13 +47,8 @@ foreign import _charAt :: (forall a. a -> Maybe a)
                        -> Maybe Char
 
 -- | Returns a string of length `1` containing the given character.
-fromChar :: Char -> String
-fromChar = C.toString
-
--- | Returns a string of length `1` containing the given character.
 -- | Same as `fromChar`.
-singleton :: Char -> String
-singleton = fromChar
+foreign import singleton :: Char -> String
 
 -- | Returns the numeric Unicode value of the character at the given index,
 -- | if the index is within bounds.

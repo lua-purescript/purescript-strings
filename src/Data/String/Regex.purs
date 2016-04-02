@@ -19,6 +19,8 @@ module Data.String.Regex
   ) where
 
 import Prelude
+
+import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.String (contains)
 
@@ -47,11 +49,16 @@ noFlags = { global     : false
           , sticky     : false
           , unicode    : false }
 
-foreign import regex' :: String -> String -> Regex
+foreign import regex' :: (String -> Either String Regex)
+                      -> (Regex -> Either String Regex)
+                      -> String
+                      -> String
+                      -> Either String Regex
 
--- | Constructs a `Regex` from a pattern string and flags.
-regex :: String -> RegexFlags -> Regex
-regex s f = regex' s $ renderFlags f
+-- | Constructs a `Regex` from a pattern string and flags. Fails with
+-- | `Left error` if the pattern contains a syntax error.
+regex :: String -> RegexFlags -> Either String Regex
+regex s f = regex' Left Right s $ renderFlags f
 
 -- | Returns the pattern string used to construct the given `Regex`.
 foreign import source :: Regex -> String
@@ -62,10 +69,10 @@ foreign import flags :: Regex -> RegexFlags
 -- | Returns the string representation of the given `RegexFlags`.
 renderFlags :: RegexFlags -> String
 renderFlags f =
-  (if f.global then "g" else "") ++
-  (if f.ignoreCase then "i" else "") ++
-  (if f.multiline then "m" else "") ++
-  (if f.sticky then "y" else "") ++
+  (if f.global then "g" else "") <>
+  (if f.ignoreCase then "i" else "") <>
+  (if f.multiline then "m" else "") <>
+  (if f.sticky then "y" else "") <>
   (if f.unicode then "u" else "")
 
 -- | Parses the string representation of `RegexFlags`.
@@ -78,7 +85,9 @@ parseFlags s =
   , unicode: contains "u" s
   }
 
--- | Returns `true` if the `Regex` matches the string.
+-- | Returns `true` if the `Regex` matches the string. In contrast to
+-- | `RegExp.prototype.test()` in JavaScript, `test` does not affect
+-- | the `lastIndex` property of the Regex.
 foreign import test :: Regex -> String -> Boolean
 
 foreign import _match :: (forall r. r -> Maybe r)

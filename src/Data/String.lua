@@ -11,6 +11,10 @@ String["_charAt"] = function (just)
   end
 end
 
+String.singleton = function(c)
+	return c
+end
+
 String["_charCodeAt"] = function (just)
   return function (nothing)
     return function (i)
