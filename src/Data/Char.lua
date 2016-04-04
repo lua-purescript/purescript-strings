@@ -2,11 +2,11 @@
 local Char = {}
 
 Char.toCharCode = function (c)
-  return byte(c)
+  return string.byte(c)
 end
 
 Char.fromCharCode = function (c)
-  return char(c)
+  return string.char(c)
 end
 
 Char.toLower = function (c)
@@ -14,7 +14,7 @@ Char.toLower = function (c)
 end
 
 Char.toUpper = function (c)
-  return string(upper(c))
+  return string.upper(c)
 end
 
 return Char
